@@ -70,25 +70,3 @@ npm install
 npm start
 ```
 
-## 📸 Screenshots
-
-Add screenshots of:
-
-* Login page
-* Signup page
-* Create Ticket form
-* Ticket List view
-
----
-
-## 🙋‍♀️ Author
-
-**Tanya Kumari**
-
-GitHub: [Tanyajha-2003](https://github.com/Tanyajha-2003)
-
----
-
-## 📝 License
-
-This project is licensed under the MIT License.
