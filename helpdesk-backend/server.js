@@ -83,6 +83,9 @@ app.put("/api/tickets/:id", authenticateToken, (req, res) => {
   ticket.status = req.body.status;
   res.json({ message: "Ticket updated." });
 });
-
+app.use(express.static(path.join(__dirname, "../helpdesk-frontend/build")));
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../helpdesk-frontend/build", "index.html"));
+  });
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

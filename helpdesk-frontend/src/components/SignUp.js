@@ -90,9 +90,9 @@ export default function Signup() {
         </Button>
 
         <Box sx={styles.footerLinks}>
-        <Link href="/forgot-password" sx={{ color: "red" }}>
-  Forgot password
-</Link>
+          <Link href="/forgot-password" sx={{ color: "red" }}>
+            Forgot password
+          </Link>
 
           <Link href="/login" sx={{ fontWeight: "bold" }}>
             Sign In
