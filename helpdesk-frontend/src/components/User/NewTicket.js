@@ -11,7 +11,7 @@ import {
   Paper,
 } from "@mui/material";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
-import API from "../api"; 
+import API from "../../api"; 
 
 export default function NewTicket() {
   const [form, setForm] = useState({

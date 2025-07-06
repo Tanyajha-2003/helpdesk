@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Box, TextField, Button, Typography, Link } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../AuthContext";
 import API from "../api";
 
-const styles  = {
+const styles = {
   wrapper: {
     minHeight: "100vh",
     backgroundColor: "#55D6C2",
@@ -37,18 +38,37 @@ const styles  = {
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
       const res = await API.post("/login", { username, password });
-      localStorage.setItem("token", res.data.token);
-      navigate("/dashboard");
-    } catch {
+      const { token } = res.data;
+
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      login({ username: payload.username, role: payload.role }, token);
+  
+      // Redirect
+      switch (payload.role) {
+        case "admin":
+          navigate("/admin-dashboard");
+          break;
+        case "operation":
+          navigate("/operation-dashboard");
+          break;
+        case "support":
+          navigate("/support-dashboard");
+          break;
+        default:
+          navigate("/dashboard");
+      }
+    } catch (err) {
+      console.error(err.response ? err.response.data : err);
       alert("Login failed");
     }
   };
-
+  
   return (
     <Box sx={styles.wrapper}>
       <Box sx={styles.formBox}>
@@ -80,10 +100,9 @@ export default function Login() {
         </Button>
 
         <Box sx={styles.footerLinks}>
-        <Link href="/forgot-password" sx={{ color: "red" }}>
-  Forgot password
-</Link>
-
+          <Link href="/forgot-password" sx={{ color: "red" }}>
+            Forgot password
+          </Link>
           <Link href="/signup" sx={{ fontWeight: "bold" }}>
             Sign Up
           </Link>

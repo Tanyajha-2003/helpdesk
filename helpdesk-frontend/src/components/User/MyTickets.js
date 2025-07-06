@@ -12,7 +12,7 @@ import {
   TextField,
 } from "@mui/material";
 import TicketDetailsModal from "./TicketDetailsModal";
-import API from "../api";
+import API from "../../api";
 
 export default function MyTicket() {
   const [tickets, setTickets] = useState([]);

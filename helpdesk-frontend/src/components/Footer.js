@@ -10,9 +10,9 @@ export default function Footer() {
         color: 'black',
         textAlign: 'center',
         py: 2,
-        position: 'relative',
+        position: 'absolute',
         bottom: 0,
-        width: '100%',
+        width: '83%',
         mt: 'auto'
       }}
     >

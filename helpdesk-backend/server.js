@@ -8,7 +8,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(cors({
-  origin: "https://your-frontend-name.onrender.com" 
+  origin: 
+  "https://helpdesk-frontend-y9qc.onrender.com",
 }));
 
 // In-memory data
@@ -32,9 +33,9 @@ function authenticateToken(req, res, next) {
 
 // Signup
 app.post("/api/signup", async (req, res) => {
-  const { username, password, role } = req.body;
+  const { username, password, email, role } = req.body;
   const hashed = await bcrypt.hash(password, 10);
-  users.push({ username, password: hashed, role });
+  users.push({ username, email, password: hashed, role });
   res.json({ message: "User registered." });
 });
 
@@ -48,7 +49,11 @@ app.post("/api/login", async (req, res) => {
   if (!valid) return res.status(400).json({ message: "Invalid credentials." });
 
   const token = jwt.sign({ username: user.username, role: user.role }, JWT_SECRET);
-  res.json({ token });
+  res.json({ 
+    token,
+    user: { username: user.username, role: user.role }
+  });
+  
 });
 
 // Get tickets

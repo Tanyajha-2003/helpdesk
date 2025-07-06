@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { Box, TextField, Button, Typography, Link } from "@mui/material";
+import React, { useState, useContext  } from "react";
+import { Box, TextField, Button, Typography, Link, Select, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import API from "../api";
-
+import { AuthContext } from "../AuthContext";  
 const styles = {
   wrapper: {
     minHeight: "100vh",
@@ -34,24 +34,51 @@ const styles = {
   },
 };
 
-
 export default function Signup() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [role, setRole] = useState("user");
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const handleSignup = async () => {
     try {
-      await API.post("/signup", { username, password, role: "user" });
+      console.log("📨 Sending signup...");
+      await API.post("/signup", { username, password, email, role });
+  
+      console.log("✅ Signup success, logging in...");
       const res = await API.post("/login", { username, password });
-      localStorage.setItem("token", res.data.token);
-      navigate("/dashboard");
+  
+      console.log("✅ Login response:", res.data);
+  
+      const { token, user } = res.data;
+  
+      if (!token || !user) {
+        throw new Error("Invalid login response");
+      }
+  
+      login(user, token);
+  
+      switch (user.role) {
+        case "admin":
+          navigate("/admin-dashboard");
+          break;
+        case "operation":
+          navigate("/operation-dashboard");
+          break;
+        case "support":
+          navigate("/support-dashboard");
+          break;
+        default:
+          navigate("/dashboard");
+      }
     } catch (err) {
+      console.error("❌ Signup/Login Error:", err.response?.data || err.message);
       alert("Signup failed");
     }
   };
-
+  
   return (
     <Box sx={styles.wrapper}>
       <Box sx={styles.formBox}>
@@ -85,6 +112,18 @@ export default function Signup() {
           onChange={(e) => setEmail(e.target.value)}
         />
 
+        <Select
+          fullWidth
+          margin="normal"
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+        >
+          <MenuItem value="user">User</MenuItem>
+          <MenuItem value="support">Technical Support</MenuItem>
+          <MenuItem value="operation">Operation Team</MenuItem>
+          <MenuItem value="admin">Admin</MenuItem>
+        </Select>
+
         <Button fullWidth sx={styles.button} onClick={handleSignup}>
           Sign Up
         </Button>
@@ -93,7 +132,6 @@ export default function Signup() {
           <Link href="/forgot-password" sx={{ color: "red" }}>
             Forgot password
           </Link>
-
           <Link href="/login" sx={{ fontWeight: "bold" }}>
             Sign In
           </Link>
